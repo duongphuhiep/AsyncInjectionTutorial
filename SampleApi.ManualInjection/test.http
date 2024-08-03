@@ -1,0 +1,6 @@
+@ApiUrl = https://localhost:7075
+
+GET {{ApiUrl}}/payment/helloexo/1
+Accept: application/json
+
+###
