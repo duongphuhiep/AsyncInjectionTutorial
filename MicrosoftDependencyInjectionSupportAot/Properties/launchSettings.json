@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "MicrosoftDependencyInjectionSupportAot": {
+      "commandName": "Project"
+    },
+    "Container (Dockerfile)": {
+      "commandName": "Docker"
+    }
+  }
+}
