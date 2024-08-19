@@ -21,6 +21,10 @@ public class ExecutionContextAsyncInjector : IExecutionContextAsyncInjector
 
     public void Inject(Guid executionContextId)
     {
+        if (_isInjected)
+        {
+            throw new InvalidOperationException("ExecutionContext has been injected. You can only do it once per scope (request)");
+        }
         _executionContextId = executionContextId;
         _isInjected = true;
     }

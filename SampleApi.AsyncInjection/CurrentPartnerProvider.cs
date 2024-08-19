@@ -8,7 +8,12 @@ public interface ICurrentPartnerProvider
 
 public class CurrentPartnerProvider(IPartnerContextService _partnerContextService) : ICurrentPartnerProvider
 {
-    private string _partnerName;
+    /// <summary>
+    /// Protect from calling <see cref="ProvidePartnerName(string)"/> concurently.
+    /// </summary>
+    private readonly SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1);
+
+    private string? _partnerName;
 
     /// <summary>
     /// Cached value for the request
@@ -17,7 +22,19 @@ public class CurrentPartnerProvider(IPartnerContextService _partnerContextServic
 
     public void ProvidePartnerName(string partnerName)
     {
-        _partnerName = partnerName;
+        semaphoreSlim.Wait();
+        try
+        {
+            if (!string.IsNullOrEmpty(_partnerName))
+            {
+                throw new InvalidOperationException("Partner name is already provided. You can only do it once per request");
+            }
+            _partnerName = partnerName;
+        }
+        finally
+        {
+            semaphoreSlim.Release();
+        }
     }
 
     /// <summary>
@@ -30,6 +47,7 @@ public class CurrentPartnerProvider(IPartnerContextService _partnerContextServic
         {
             throw new InvalidOperationException("No partner name is provided");
         }
+
         if (_partnerContext?.Name == _partnerName)
         {
             return _partnerContext;
