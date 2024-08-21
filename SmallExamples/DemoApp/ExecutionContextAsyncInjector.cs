@@ -3,6 +3,7 @@ namespace SmallExamples;
 
 public class ExecutionContextAsyncInjector : IExecutionContextAsyncInjector
 {
+    private readonly object obj = new object();
     private Guid _executionContextId;
 
     private bool _isInjected = false;
@@ -21,11 +22,14 @@ public class ExecutionContextAsyncInjector : IExecutionContextAsyncInjector
 
     public void Inject(Guid executionContextId)
     {
-        if (_isInjected)
+        lock (obj)
         {
-            throw new InvalidOperationException("ExecutionContext has been injected. You can only do it once per scope (request)");
+            if (_isInjected)
+            {
+                throw new InvalidOperationException("ExecutionContext has been injected. You can only do it once per scope (request)");
+            }
+            _executionContextId = executionContextId;
+            _isInjected = true;
         }
-        _executionContextId = executionContextId;
-        _isInjected = true;
     }
 }
