@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Routing.Template;
 
 namespace SampleApi.AsyncInjection.Controller;
 
@@ -8,7 +7,6 @@ public class PaymentController(IPaymentService _paymentService, ICurrentPartnerP
     [HttpGet("/payment/{partnerName}/{paymentId}")]
     public async Task<Payment> GetPaymentAsync([FromRoute] string partnerName, [FromRoute] int paymentId)
     {
-        RouteTemplate routeTemplate = TemplateParser.Parse("/payment/{partnerName}/{paymentId}");
         _currentPartnerProvider.ProvidePartnerName(partnerName);
         return await _paymentService.ComputeDerivedPaymentAsync(paymentId);
     }

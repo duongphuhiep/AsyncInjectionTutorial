@@ -1,0 +1,9 @@
+@ApiUrl = https://localhost:7077
+
+GET {{ApiUrl}}/payment/helloexo/1
+Accept: application/json
+
+###
+
+GET {{ApiUrl}}/payment/yesncf/1
+Accept: application/json
